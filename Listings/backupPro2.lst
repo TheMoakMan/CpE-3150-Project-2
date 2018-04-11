@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 14:55:47 PAGE     1
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 17:18:08 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.2.5.0
@@ -122,7 +122,7 @@ LOC  OBJ            LINE     SOURCE
 
   0084          +1    57     KB4         BIT     0x84
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 14:55:47 PAGE     2
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 17:18:08 PAGE     2
 
   0085          +1    58     KB5         BIT     0x85
 
@@ -256,7 +256,7 @@ LOC  OBJ            LINE     SOURCE
 
   008A          +1   123     TL0         DATA        0x8A
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 14:55:47 PAGE     3
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 17:18:08 PAGE     3
 
   008C          +1   124     TH0         DATA        0x8C
 
@@ -390,7 +390,7 @@ LOC  OBJ            LINE     SOURCE
 
   00D3          +1   189     RTCL    DATA    0xD3
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 14:55:47 PAGE     4
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 17:18:08 PAGE     4
 
   00D2          +1   190     RTCH    DATA    0xD2
 
@@ -524,7 +524,7 @@ LOC  OBJ            LINE     SOURCE
 
   00A7               255     led3    equ 0a7h
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 14:55:47 PAGE     5
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 17:18:08 PAGE     5
 
   0086               256     led4    equ 86h
 
@@ -560,119 +560,191 @@ LOC  OBJ            LINE     SOURCE
 
   0097               272     SPKR    equ 97h
 
-  0020               273     CNTR    equ 20h
+  0000               273     on              equ 0
 
-  0000               274     on              equ 0
+  0001               274     off             equ 1
 
-  0001               275     off             equ 1
+                     275             
 
-                     276             
+0000 7D00            276     mov R5, #00
 
-0000 752000          277     mov CNTR, #00
+0002 75A400          277     mov P2M1, #00           ; set Port 2 to bi-directional
 
-0003 75A400          278     mov P2M1, #00           ; set Port 2 to bi-directional
+0005 759100          278     mov P1M1, #00           ; set Port 1 to bi-directional
 
-0006 759100          279     mov P1M1, #00           ; set Port 1 to bi-directional
+0008 758400          279     mov P0M1, #00           ; set Port 0 to bi-directional
 
-0009 758400          280     mov P0M1, #00           ; set Port 0 to bi-directional
+000B 75D000          280     mov PSW, #00
 
-                     281             
+000E E4              281     CLR A
 
-000C                 282     MAIN:
+000F C3              282     CLR C
 
                      283     
 
-                     284             ;mov A, CNTR
+0010                 284     MAIN:
 
-                     285             ;CPL A
+                     285     
 
-                     286             
+                     286             ;CPL A
 
-                     287             ;mov a, sw2
+                     287             
 
-000C E520            288             mov A, CNTR   ;Move the entire number into the accumulator
+                     288             ;mov a, sw2             
 
-000E F4              289         CPL A             ;Complement the bits and send to the LEDs 
+0010 120046          289             lcall RESET
 
-000F A2E0            290             mov c, 0E0h   ;A.0
+0013 ED              290             mov A, R5
 
-0011 92A6            291             mov led9, c   ;A.0
+0014 F4              291         CPL A             ;Complement the bits and send to the LEDs 
 
-0013 A2E1            292             mov c, 0E1h   ;A.1
+0015 A2E0            292             mov c, 0E0h   ;A.0
 
-0015 9287            293             mov led8, c   ;A.1
+0017 92A6            293             mov led9, c   ;A.0
 
-0017 A2E2            294             mov c, 0E2h   ;A.2
+0019 A2E1            294             mov c, 0E1h   ;A.1
 
-0019 92A5            295             mov led7, c   ;A.2
+001B 9287            295             mov led8, c   ;A.1
 
-001B A2E3            296             mov c, 0E3h   ;A.3
+001D A2E2            296             mov c, 0E2h   ;A.2
 
-001D 9286            297             mov led4, c   ;A.3
+001F 92A5            297             mov led7, c   ;A.2
 
-001F 30A00C          298             jnb sw1, DECREMENT
+0021 A2E3            298             mov c, 0E3h   ;A.3
 
-0022 308102          299             jnb sw2, INCREMENT
+0023 9286            299             mov led4, c   ;A.3
 
-                     300             ;cjne a, #off, INCREMENT
+0025 C3              300             clr c
 
-0025 80E5            301             sjmp MAIN
+0026 30A011          301             jnb sw1, DECREMENT
 
-                     302             
+0029 308105          302             jnb sw2, INCREMENT
 
-0027 0520            303     INCREMENT:         INC CNTR             ;Add 1 to the current value
+002C 30A343          303             jnb sw3, CLEAR
 
-                     304                       
+                     304             ;cjne a, #off, INCREMENT
 
-                     305                                
+002F 80DF            305             sjmp MAIN
 
-                     306                                
+                     306             
 
-0029 3081FD          307     INCHOLD:           jnb sw2, INCHOLD ;Keep looping this if the button is held
+0031 ED              307     INCREMENT:         mov A, R5            
 
-002C 80DE            308                        sjmp MAIN
+0032 2401            308                                add A, #01h      ;Add 10h to the current value
 
-                     309             
+0034 FD              309                                mov R5, A
 
-002E 1520            310     DECREMENT:     DEC CNTR         ;Subtract 1 from the current value
+                     310                                
 
-0030 E520            311                        mov A, CNTR          ;Move the entire number into the accumulator
+                     311                       
 
-0032 F4              312                    CPL A            ;Complement the bits and send to the LEDs          
+                     312                                
 
-0033 A2E0            313                                mov c, 0E0h   ;A.0
+                     313                                
 
-0035 92A6            314                                mov led9, c   ;A.0
+0035 3081FD          314     INCHOLD:           jnb sw2, INCHOLD ;Keep looping this if the button is held
 
-0037 A2E1            315                                mov c, 0E1h   ;A.1
+                     315                                ;jb psw.6, RESET
 
-0039 9287            316                                mov led8, c   ;A.1
+0038 80D6            316                                sjmp MAIN
 
-003B A2E2            317                                mov c, 0E2h   ;A.2
+                     317             
 
-003D 92A5            318                                mov led7, c   ;A.2
+003A C3              318     DECREMENT:     clr c
 
-003F A2E3            319                                mov c, 0E3h   ;A.3
+003B ED              319                    mov A, R5                
 
-0041 9286            320                                mov led4, c   ;A.3
+003C 9401            320                                subb A, #01h      ;Add 10h to the current value
 
-                     321     
+003E FD              321                                mov R5, A       
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 14:55:47 PAGE     6
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 17:18:08 PAGE     6
 
-0043 30A0FD          322     DECHOLD:           jnb sw1, DECHOLD; ; Keep looping this if the button is held
+                     322                                
 
-0046 80C4            323                        sjmp MAIN
+                     323     
 
-                     324                        
+003F 30A0FD          324     DECHOLD:           jnb sw1, DECHOLD; ; Keep looping this if the button is held
 
-                     325     end
+0042 C2D6            325                                clr psw.6
+
+                     326                                ;jb psw.7, RESET
+
+0044 80CA            327                        sjmp MAIN
+
+                     328                                
+
+0046 20D604          329     RESET:             jb psw.6, RESETINC
+
+0049 20D70A          330                                jb psw.7, RESETDEC
+
+004C 22              331     RESETRET:          ret
+
+                     332                                
+
+004D C2D6            333     RESETINC:          clr psw.6
+
+004F 7D00            334                                mov R5, #00
+
+0051 12006A          335                    lcall ALARM
+
+0054 80F6            336                                SJMP RESETRET
+
+0056 C2D7            337     RESETDEC:          clr psw.7
+
+0058 7D0F            338                                mov R5, #0fh
+
+005A 12006A          339                                lcall ALARM
+
+005D 80ED            340                                SJMP RESETRET
+
+                     341                                
+
+                     342                                
+
+005F 78E6            343     DELAY:         mov R0, #230
+
+0061 00              344     here:          nop
+
+0062 00              345                    nop
+
+0063 00              346                                nop
+
+0064 00              347                                nop
+
+0065 00              348                                nop
+
+0066 00              349                                nop
+
+0067 D8F8            350                                djnz R0, here
+
+0069 22              351                                ret
+
+                     352     
+
+006A B297            353     ALARM:         cpl SPKR
+
+006C 12005F          354                                lcall DELAY
+
+006F B297            355                                cpl SPKR
+
+0071 22              356                                ret
+
+0072 7D00            357     CLEAR:             mov R5, #00
+
+0074 12006A          358                                lcall ALARM
+
+0077 8097            359                                sjmp MAIN
+
+                     360                        
+
+                     361     end
 
                                      
 
                                      
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 14:55:47 PAGE     7
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 17:18:08 PAGE     7
 
 SYMBOL TABLE LISTING
 ------ ----- -------
@@ -683,6 +755,7 @@ N A M E             T Y P E  V A L U E   ATTRIBUTES
 AA . . . . . . . .  B ADDR   00D8H.2 A   
 AC . . . . . . . .  B ADDR   00D0H.6 A   
 ACC. . . . . . . .  D ADDR   00E0H   A   
+ALARM. . . . . . .  C ADDR   006AH   A   
 ALTAB. . . . . . .  B ADDR   00C8H.3 A   
 ALTCD. . . . . . .  B ADDR   00C8H.4 A   
 AUXR1. . . . . . .  D ADDR   00A2H   A   
@@ -698,19 +771,20 @@ CIN1A. . . . . . .  B ADDR   0080H.4 A
 CIN1B. . . . . . .  B ADDR   0080H.3 A   
 CIN2A. . . . . . .  B ADDR   0080H.2 A   
 CIN2B. . . . . . .  B ADDR   0080H.1 A   
+CLEAR. . . . . . .  C ADDR   0072H   A   
 CMP1 . . . . . . .  D ADDR   00ACH   A   
 CMP1O. . . . . . .  B ADDR   0080H.6 A   
 CMP2 . . . . . . .  D ADDR   00ADH   A   
 CMP2O. . . . . . .  B ADDR   0080H.0 A   
 CMPREF . . . . . .  B ADDR   0080H.5 A   
-CNTR . . . . . . .  N NUMB   0020H   A   
 CRSEL. . . . . . .  B ADDR   00D8H.0 A   
 CY . . . . . . . .  B ADDR   00D0H.7 A   
-DECHOLD. . . . . .  C ADDR   0043H   A   
-DECREMENT. . . . .  C ADDR   002EH   A   
+DECHOLD. . . . . .  C ADDR   003FH   A   
+DECREMENT. . . . .  C ADDR   003AH   A   
 DEEADR . . . . . .  D ADDR   00F3H   A   
 DEECON . . . . . .  D ADDR   00F1H   A   
 DEEDAT . . . . . .  D ADDR   00F2H   A   
+DELAY. . . . . . .  C ADDR   005FH   A   
 DIVM . . . . . . .  D ADDR   0095H   A   
 DPH. . . . . . . .  D ADDR   0083H   A   
 DPL. . . . . . . .  D ADDR   0082H   A   
@@ -733,15 +807,16 @@ EX1. . . . . . . .  B ADDR   00A8H.2 A
 F0 . . . . . . . .  B ADDR   00D0H.5 A   
 F1 . . . . . . . .  B ADDR   00D0H.1 A   
 FE . . . . . . . .  B ADDR   0098H.7 A   
+HERE . . . . . . .  C ADDR   0061H   A   
 HLTEN. . . . . . .  B ADDR   00C8H.5 A   
 HLTRN. . . . . . .  B ADDR   00C8H.6 A   
 I2ADR. . . . . . .  D ADDR   00DBH   A   
 I2CON. . . . . . .  D ADDR   00D8H   A   
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 17:18:08 PAGE     8
+
 I2DAT. . . . . . .  D ADDR   00DAH   A   
 I2EN . . . . . . .  B ADDR   00D8H.6 A   
 I2SCLH . . . . . .  D ADDR   00DDH   A   
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 14:55:47 PAGE     8
-
 I2SCLL . . . . . .  D ADDR   00DCH   A   
 I2STAT . . . . . .  D ADDR   00D9H   A   
 ICA. . . . . . . .  B ADDR   00A0H.7 A   
@@ -754,8 +829,8 @@ IE0. . . . . . . .  B ADDR   0088H.1 A
 IE1. . . . . . . .  B ADDR   0088H.3 A   
 IEN0 . . . . . . .  D ADDR   00A8H   A   
 IEN1 . . . . . . .  D ADDR   00E8H   A   
-INCHOLD. . . . . .  C ADDR   0029H   A   
-INCREMENT. . . . .  C ADDR   0027H   A   
+INCHOLD. . . . . .  C ADDR   0035H   A   
+INCREMENT. . . . .  C ADDR   0031H   A   
 INT0 . . . . . . .  B ADDR   0090H.3 A   
 INT1 . . . . . . .  B ADDR   0090H.4 A   
 IP0. . . . . . . .  D ADDR   00B8H   A   
@@ -784,7 +859,7 @@ LED6 . . . . . . .  N NUMB   0084H   A
 LED7 . . . . . . .  N NUMB   00A5H   A   
 LED8 . . . . . . .  N NUMB   0087H   A   
 LED9 . . . . . . .  N NUMB   00A6H   A   
-MAIN . . . . . . .  C ADDR   000CH   A   
+MAIN . . . . . . .  C ADDR   0010H   A   
 MISO . . . . . . .  B ADDR   00A0H.3 A   
 MOSI . . . . . . .  B ADDR   00A0H.2 A   
 OCA. . . . . . . .  B ADDR   00A0H.6 A   
@@ -805,11 +880,11 @@ OV . . . . . . . .  B ADDR   00D0H.2 A
 P. . . . . . . . .  B ADDR   00D0H.0 A   
 P0 . . . . . . . .  D ADDR   0080H   A   
 P0M1 . . . . . . .  D ADDR   0084H   A   
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 17:18:08 PAGE     9
+
 P0M2 . . . . . . .  D ADDR   0085H   A   
 P1 . . . . . . . .  D ADDR   0090H   A   
 P1M1 . . . . . . .  D ADDR   0091H   A   
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 14:55:47 PAGE     9
-
 P1M2 . . . . . . .  D ADDR   0092H   A   
 P2 . . . . . . . .  D ADDR   00A0H   A   
 P2M1 . . . . . . .  D ADDR   00A4H   A   
@@ -839,6 +914,10 @@ PX0. . . . . . . .  B ADDR   00B8H.0 A
 PX1. . . . . . . .  B ADDR   00B8H.2 A   
 RB8. . . . . . . .  B ADDR   0098H.2 A   
 REN. . . . . . . .  B ADDR   0098H.4 A   
+RESET. . . . . . .  C ADDR   0046H   A   
+RESETDEC . . . . .  C ADDR   0056H   A   
+RESETINC . . . . .  C ADDR   004DH   A   
+RESETRET . . . . .  C ADDR   004CH   A   
 RI . . . . . . . .  B ADDR   0098H.0 A   
 RS0. . . . . . . .  B ADDR   00D0H.3 A   
 RS1. . . . . . . .  B ADDR   00D0H.4 A   
@@ -869,6 +948,8 @@ SSTAT. . . . . . .  D ADDR   00BAH   A
 STA. . . . . . . .  B ADDR   00D8H.5 A   
 STO. . . . . . . .  B ADDR   00D8H.4 A   
 SW1. . . . . . . .  N NUMB   00A0H   A   
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 17:18:08 PAGE    10
+
 SW2. . . . . . . .  N NUMB   0081H   A   
 SW3. . . . . . . .  N NUMB   00A3H   A   
 SW4. . . . . . . .  N NUMB   0082H   A   
@@ -876,8 +957,6 @@ SW5. . . . . . . .  N NUMB   0094H   A
 SW6. . . . . . . .  N NUMB   0080H   A   
 SW7. . . . . . . .  N NUMB   00A1H   A   
 SW8. . . . . . . .  N NUMB   0083H   A   
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 14:55:47 PAGE    10
-
 SW9. . . . . . . .  N NUMB   00A2H   A   
 T0 . . . . . . . .  B ADDR   0090H.2 A   
 T1 . . . . . . . .  B ADDR   0080H.7 A   
