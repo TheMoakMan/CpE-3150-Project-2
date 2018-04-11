@@ -102,9 +102,16 @@ here:          nop
 			   djnz R0, here
 			   ret
 
-ALARM:         cpl SPKR
+ALARM:         mov R6, #2
+ALARMLOOP:			   mov R7, #255
+ALARMLOOP2:    setb SPKR
+			   clr led3
 			   lcall DELAY
-			   cpl SPKR
+			   setb led3
+			   clr SPKR
+			   lcall delay
+			   djnz R7, ALARMLOOP2
+			   djnz R6, ALARMLOOP
 			   ret
 CLEAR:		   mov R5, #00
 			   lcall ALARM

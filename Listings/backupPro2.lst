@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 17:18:08 PAGE     1
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 18:03:26 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.2.5.0
@@ -122,7 +122,7 @@ LOC  OBJ            LINE     SOURCE
 
   0084          +1    57     KB4         BIT     0x84
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 17:18:08 PAGE     2
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 18:03:26 PAGE     2
 
   0085          +1    58     KB5         BIT     0x85
 
@@ -256,7 +256,7 @@ LOC  OBJ            LINE     SOURCE
 
   008A          +1   123     TL0         DATA        0x8A
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 17:18:08 PAGE     3
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 18:03:26 PAGE     3
 
   008C          +1   124     TH0         DATA        0x8C
 
@@ -390,7 +390,7 @@ LOC  OBJ            LINE     SOURCE
 
   00D3          +1   189     RTCL    DATA    0xD3
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 17:18:08 PAGE     4
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 18:03:26 PAGE     4
 
   00D2          +1   190     RTCH    DATA    0xD2
 
@@ -524,7 +524,7 @@ LOC  OBJ            LINE     SOURCE
 
   00A7               255     led3    equ 0a7h
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 17:18:08 PAGE     5
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 18:03:26 PAGE     5
 
   0086               256     led4    equ 86h
 
@@ -620,7 +620,7 @@ LOC  OBJ            LINE     SOURCE
 
 0029 308105          302             jnb sw2, INCREMENT
 
-002C 30A343          303             jnb sw3, CLEAR
+002C 30A352          303             jnb sw3, CLEAR
 
                      304             ;cjne a, #off, INCREMENT
 
@@ -658,7 +658,7 @@ LOC  OBJ            LINE     SOURCE
 
 003E FD              321                                mov R5, A       
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 17:18:08 PAGE     6
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 18:03:26 PAGE     6
 
                      322                                
 
@@ -722,29 +722,43 @@ LOC  OBJ            LINE     SOURCE
 
                      352     
 
-006A B297            353     ALARM:         cpl SPKR
+006A 7E02            353     ALARM:         mov R6, #2
 
-006C 12005F          354                                lcall DELAY
+006C 7FFF            354     ALARMLOOP:                         mov R7, #255
 
-006F B297            355                                cpl SPKR
+006E D297            355     ALARMLOOP2:    setb SPKR
 
-0071 22              356                                ret
+0070 C2A7            356                                clr led3
 
-0072 7D00            357     CLEAR:             mov R5, #00
+0072 12005F          357                                lcall DELAY
 
-0074 12006A          358                                lcall ALARM
+0075 D2A7            358                                setb led3
 
-0077 8097            359                                sjmp MAIN
+0077 C297            359                                clr SPKR
 
-                     360                        
+0079 12005F          360                                lcall delay
 
-                     361     end
+007C DFF0            361                                djnz R7, ALARMLOOP2
+
+007E DEEC            362                                djnz R6, ALARMLOOP
+
+0080 22              363                                ret
+
+0081 7D00            364     CLEAR:             mov R5, #00
+
+0083 12006A          365                                lcall ALARM
+
+0086 8088            366                                sjmp MAIN
+
+                     367                        
+
+                     368     end
 
                                      
 
                                      
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 17:18:08 PAGE     7
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 18:03:26 PAGE     7
 
 SYMBOL TABLE LISTING
 ------ ----- -------
@@ -756,6 +770,8 @@ AA . . . . . . . .  B ADDR   00D8H.2 A
 AC . . . . . . . .  B ADDR   00D0H.6 A   
 ACC. . . . . . . .  D ADDR   00E0H   A   
 ALARM. . . . . . .  C ADDR   006AH   A   
+ALARMLOOP. . . . .  C ADDR   006CH   A   
+ALARMLOOP2 . . . .  C ADDR   006EH   A   
 ALTAB. . . . . . .  B ADDR   00C8H.3 A   
 ALTCD. . . . . . .  B ADDR   00C8H.4 A   
 AUXR1. . . . . . .  D ADDR   00A2H   A   
@@ -771,7 +787,7 @@ CIN1A. . . . . . .  B ADDR   0080H.4 A
 CIN1B. . . . . . .  B ADDR   0080H.3 A   
 CIN2A. . . . . . .  B ADDR   0080H.2 A   
 CIN2B. . . . . . .  B ADDR   0080H.1 A   
-CLEAR. . . . . . .  C ADDR   0072H   A   
+CLEAR. . . . . . .  C ADDR   0081H   A   
 CMP1 . . . . . . .  D ADDR   00ACH   A   
 CMP1O. . . . . . .  B ADDR   0080H.6 A   
 CMP2 . . . . . . .  D ADDR   00ADH   A   
@@ -810,10 +826,10 @@ FE . . . . . . . .  B ADDR   0098H.7 A
 HERE . . . . . . .  C ADDR   0061H   A   
 HLTEN. . . . . . .  B ADDR   00C8H.5 A   
 HLTRN. . . . . . .  B ADDR   00C8H.6 A   
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 18:03:26 PAGE     8
+
 I2ADR. . . . . . .  D ADDR   00DBH   A   
 I2CON. . . . . . .  D ADDR   00D8H   A   
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 17:18:08 PAGE     8
-
 I2DAT. . . . . . .  D ADDR   00DAH   A   
 I2EN . . . . . . .  B ADDR   00D8H.6 A   
 I2SCLH . . . . . .  D ADDR   00DDH   A   
@@ -878,10 +894,10 @@ OFF. . . . . . . .  N NUMB   0001H   A
 ON . . . . . . . .  N NUMB   0000H   A   
 OV . . . . . . . .  B ADDR   00D0H.2 A   
 P. . . . . . . . .  B ADDR   00D0H.0 A   
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 18:03:26 PAGE     9
+
 P0 . . . . . . . .  D ADDR   0080H   A   
 P0M1 . . . . . . .  D ADDR   0084H   A   
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 17:18:08 PAGE     9
-
 P0M2 . . . . . . .  D ADDR   0085H   A   
 P1 . . . . . . . .  D ADDR   0090H   A   
 P1M1 . . . . . . .  D ADDR   0091H   A   
@@ -946,10 +962,10 @@ SPSTAT . . . . . .  D ADDR   00E1H   A
 SS . . . . . . . .  B ADDR   00A0H.4 A   
 SSTAT. . . . . . .  D ADDR   00BAH   A   
 STA. . . . . . . .  B ADDR   00D8H.5 A   
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 18:03:26 PAGE    10
+
 STO. . . . . . . .  B ADDR   00D8H.4 A   
 SW1. . . . . . . .  N NUMB   00A0H   A   
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/11/2018 17:18:08 PAGE    10
-
 SW2. . . . . . . .  N NUMB   0081H   A   
 SW3. . . . . . . .  N NUMB   00A3H   A   
 SW4. . . . . . . .  N NUMB   0082H   A   

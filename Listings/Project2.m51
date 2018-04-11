@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22                                                        04/11/2018  17:35:16  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22                                                        04/11/2018  18:03:26  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
@@ -20,7 +20,7 @@ LINK MAP OF MODULE:  .\Objects\Project2 (BACKUPPRO2)
             REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
 
             * * * * * * *   C O D E   M E M O R Y   * * * * * * *
-            CODE    0000H     0079H     ABSOLUTE     
+            CODE    0000H     0088H     ABSOLUTE     
 
 
 
@@ -34,6 +34,8 @@ SYMBOL TABLE OF MODULE:  .\Objects\Project2 (BACKUPPRO2)
   B:00D0H.6       SYMBOL        AC
   D:00E0H         SYMBOL        ACC
   C:006AH         SYMBOL        ALARM
+  C:006CH         SYMBOL        ALARMLOOP
+  C:006EH         SYMBOL        ALARMLOOP2
   B:00C8H.3       SYMBOL        ALTAB
   B:00C8H.4       SYMBOL        ALTCD
   D:00A2H         SYMBOL        AUXR1
@@ -49,7 +51,7 @@ SYMBOL TABLE OF MODULE:  .\Objects\Project2 (BACKUPPRO2)
   B:0080H.3       SYMBOL        CIN1B
   B:0080H.2       SYMBOL        CIN2A
   B:0080H.1       SYMBOL        CIN2B
-  C:0072H         SYMBOL        CLEAR
+  C:0081H         SYMBOL        CLEAR
   D:00ACH         SYMBOL        CMP1
   B:0080H.6       SYMBOL        CMP1O
   D:00ADH         SYMBOL        CMP2
@@ -57,11 +59,11 @@ SYMBOL TABLE OF MODULE:  .\Objects\Project2 (BACKUPPRO2)
   B:0080H.5       SYMBOL        CMPREF
   B:00D8H.0       SYMBOL        CRSEL
   B:00D0H.7       SYMBOL        CY
+BL51 BANKED LINKER/LOCATER V6.22                                                      04/11/2018  18:03:26  PAGE 2
+
+
   C:003FH         SYMBOL        DECHOLD
   C:003AH         SYMBOL        DECREMENT
-BL51 BANKED LINKER/LOCATER V6.22                                                      04/11/2018  17:35:16  PAGE 2
-
-
   D:00F3H         SYMBOL        DEEADR
   D:00F1H         SYMBOL        DEECON
   D:00F2H         SYMBOL        DEEDAT
@@ -117,11 +119,11 @@ SYMBOL TABLE OF MODULE:  .\Objects\Project2 (BACKUPPRO2)
   D:00F8H         SYMBOL        IP1
   D:00F7H         SYMBOL        IP1H
   B:0088H.0       SYMBOL        IT0
+BL51 BANKED LINKER/LOCATER V6.22                                                      04/11/2018  18:03:26  PAGE 3
+
+
   B:0088H.2       SYMBOL        IT1
   B:0080H.0       SYMBOL        KB0
-BL51 BANKED LINKER/LOCATER V6.22                                                      04/11/2018  17:35:16  PAGE 3
-
-
   B:0080H.1       SYMBOL        KB1
   B:0080H.2       SYMBOL        KB2
   B:0080H.3       SYMBOL        KB3
@@ -177,11 +179,11 @@ SYMBOL TABLE OF MODULE:  .\Objects\Project2 (BACKUPPRO2)
   B:00F8H.2       SYMBOL        PCL
   D:0087H         SYMBOL        PCON
   D:00B5H         SYMBOL        PCONA
+BL51 BANKED LINKER/LOCATER V6.22                                                      04/11/2018  18:03:26  PAGE 4
+
+
   B:00F8H.0       SYMBOL        PI2C
   B:00F8H.7       SYMBOL        PIEE
-BL51 BANKED LINKER/LOCATER V6.22                                                      04/11/2018  17:35:16  PAGE 4
-
-
   B:00F8H.1       SYMBOL        PKBI
   B:00C8H.7       SYMBOL        PLLEN
   B:00B8H.4       SYMBOL        PS
@@ -237,11 +239,11 @@ SYMBOL TABLE OF MODULE:  .\Objects\Project2 (BACKUPPRO2)
   N:0094H         SYMBOL        SW5
   N:0080H         SYMBOL        SW6
   N:00A1H         SYMBOL        SW7
+BL51 BANKED LINKER/LOCATER V6.22                                                      04/11/2018  18:03:26  PAGE 5
+
+
   N:0083H         SYMBOL        SW8
   N:00A2H         SYMBOL        SW9
-BL51 BANKED LINKER/LOCATER V6.22                                                      04/11/2018  17:35:16  PAGE 5
-
-
   B:0090H.2       SYMBOL        T0
   B:0080H.7       SYMBOL        T1
   D:008FH         SYMBOL        TAMOD
@@ -297,11 +299,11 @@ SYMBOL TABLE OF MODULE:  .\Objects\Project2 (BACKUPPRO2)
   C:001FH         LINE#         49
   C:0021H         LINE#         50
   C:0023H         LINE#         51
+BL51 BANKED LINKER/LOCATER V6.22                                                      04/11/2018  18:03:26  PAGE 6
+
+
   C:0025H         LINE#         52
   C:0026H         LINE#         53
-BL51 BANKED LINKER/LOCATER V6.22                                                      04/11/2018  17:35:16  PAGE 6
-
-
   C:0029H         LINE#         54
   C:002CH         LINE#         55
   C:002FH         LINE#         57
@@ -339,16 +341,26 @@ SYMBOL TABLE OF MODULE:  .\Objects\Project2 (BACKUPPRO2)
   C:0069H         LINE#         103
   C:006AH         LINE#         105
   C:006CH         LINE#         106
-  C:006FH         LINE#         107
-  C:0071H         LINE#         108
+  C:006EH         LINE#         107
+  C:0070H         LINE#         108
   C:0072H         LINE#         109
-  C:0074H         LINE#         110
+  C:0075H         LINE#         110
   C:0077H         LINE#         111
+  C:0079H         LINE#         112
+  C:007CH         LINE#         113
+  C:007EH         LINE#         114
+  C:0080H         LINE#         115
+  C:0081H         LINE#         116
+  C:0083H         LINE#         117
+  C:0086H         LINE#         118
   -------         ENDMOD        BACKUPPRO2
 
 ******************************************************************************
-* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 0079H BYTE ( 5%) *
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 0088H BYTE ( 6%) *
 ******************************************************************************
 
-Program Size: data=8.0 xdata=0 code=121
+BL51 BANKED LINKER/LOCATER V6.22                                                      04/11/2018  18:03:26  PAGE 7
+
+
+Program Size: data=8.0 xdata=0 code=136
 LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
