@@ -33,6 +33,10 @@ mov PSW, #00
 CLR A
 CLR C
 
+;Evan's Code
+lcall STARTUP
+
+
 MAIN:
 
 	;CPL A
@@ -116,7 +120,35 @@ ALARMLOOP2:    setb SPKR
 CLEAR:		   mov R5, #00
 			   lcall ALARM
 			   sjmp MAIN
-	           
+			   
+STARTUP:       setb led1        ;Turn each light on sequentially one at a time
+               lcall delay
+			   setb led2
+			   lcall delay
+			   setb led3
+			   lcall delay
+			   setb led6
+			   lcall delay
+			   setb led5
+			   lcall delay
+			   setb led4
+			   lcall delay
+			   setb led7
+			   lcall delay
+			   setb led8
+			   lcall delay
+			   setb led9
+			   lcall delay
+			   clr led9
+			   clr led8
+			   clr led7
+			   clr led4
+			   clr led5
+			   clr led6
+			   clr led3
+			   clr led2
+			   clr led1
+			   ret
 end
 	
 	
