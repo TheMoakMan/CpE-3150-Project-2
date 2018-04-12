@@ -117,16 +117,14 @@ LONGHERE:      nop
 			   djnz R0, longthere
 			   ret
 
-ALARM:         mov R6, #1
-ALARMLOOP:			   mov R7, #255
-ALARMLOOP2:    setb SPKR
+ALARM:         mov R7, #255
+ALARMLOOP:    setb SPKR
 			   clr led3
 			   lcall DELAY
 			   setb led3
 			   clr SPKR
 			   lcall delay
-			   djnz R7, ALARMLOOP2
-			   djnz R6, ALARMLOOP
+			   djnz R7, ALARMLOOP
 			   ret
 CLEAR:		   mov R5, #00
 			   lcall ALARM

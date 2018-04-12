@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/12/2018 09:11:07 PAGE     1
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/12/2018 09:19:53 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.2.5.0
@@ -122,7 +122,7 @@ LOC  OBJ            LINE     SOURCE
 
   0084          +1    57     KB4         BIT     0x84
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/12/2018 09:11:07 PAGE     2
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/12/2018 09:19:53 PAGE     2
 
   0085          +1    58     KB5         BIT     0x85
 
@@ -256,7 +256,7 @@ LOC  OBJ            LINE     SOURCE
 
   008A          +1   123     TL0         DATA        0x8A
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/12/2018 09:11:07 PAGE     3
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/12/2018 09:19:53 PAGE     3
 
   008C          +1   124     TH0         DATA        0x8C
 
@@ -390,7 +390,7 @@ LOC  OBJ            LINE     SOURCE
 
   00D3          +1   189     RTCL    DATA    0xD3
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/12/2018 09:11:07 PAGE     4
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/12/2018 09:19:53 PAGE     4
 
   00D2          +1   190     RTCH    DATA    0xD2
 
@@ -524,7 +524,7 @@ LOC  OBJ            LINE     SOURCE
 
   00A7               255     led3    equ 0a7h
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/12/2018 09:11:07 PAGE     5
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/12/2018 09:19:53 PAGE     5
 
   0086               256     led4    equ 86h
 
@@ -584,7 +584,7 @@ LOC  OBJ            LINE     SOURCE
 
                      284     ;Evan's Code
 
-0010 12009B          285     lcall STARTUP
+0010 120097          285     lcall STARTUP
 
                      286     
 
@@ -628,7 +628,7 @@ LOC  OBJ            LINE     SOURCE
 
 002C 308105          306             jnb sw2, INCREMENT
 
-002F 30A361          307             jnb sw3, CLEAR
+002F 30A35D          307             jnb sw3, CLEAR
 
                      308             ;cjne a, #off, INCREMENT
 
@@ -658,7 +658,7 @@ LOC  OBJ            LINE     SOURCE
 
                      321             
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/12/2018 09:11:07 PAGE     6
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/12/2018 09:19:53 PAGE     6
 
 003D C3              322     DECREMENT:     clr c
 
@@ -752,119 +752,115 @@ LOC  OBJ            LINE     SOURCE
 
                      367     
 
-007C 7E01            368     ALARM:         mov R6, #1
+007C 7FFF            368     ALARM:         mov R7, #255
 
-007E 7FFF            369     ALARMLOOP:                         mov R7, #255
+007E D297            369     ALARMLOOP:    setb SPKR
 
-0080 D297            370     ALARMLOOP2:    setb SPKR
+0080 C2A7            370                                clr led3
 
-0082 C2A7            371                                clr led3
+0082 120062          371                                lcall DELAY
 
-0084 120062          372                                lcall DELAY
+0085 D2A7            372                                setb led3
 
-0087 D2A7            373                                setb led3
+0087 C297            373                                clr SPKR
 
-0089 C297            374                                clr SPKR
+0089 120062          374                                lcall delay
 
-008B 120062          375                                lcall delay
+008C DFF0            375                                djnz R7, ALARMLOOP
 
-008E DFF0            376                                djnz R7, ALARMLOOP2
+008E 22              376                                ret
 
-0090 DEEC            377                                djnz R6, ALARMLOOP
+008F 7D00            377     CLEAR:             mov R5, #00
 
-0092 22              378                                ret
+0091 12007C          378                                lcall ALARM
 
-0093 7D00            379     CLEAR:             mov R5, #00
+0094 020013          379                                ljmp MAIN
 
-0095 12007C          380                                lcall ALARM
+                     380                                
 
-0098 020013          381                                ljmp MAIN
+0097 C2A4            381     STARTUP:       clr led1        ;Turn each light on sequentially one at a time
 
-                     382                                
+0099 12006D          382                    lcall longdelay
 
-009B C2A4            383     STARTUP:       clr led1        ;Turn each light on sequentially one at a time
+009C C285            383                                clr led2
 
-009D 12006D          384                    lcall longdelay
+009E 12006D          384                                lcall longdelay
 
-00A0 C285            385                                clr led2
+00A1 C2A7            385                                clr led3
 
-00A2 12006D          386                                lcall longdelay
+00A3 12006D          386                                lcall longdelay
 
-00A5 C2A7            387                                clr led3
+00A6 C284            387                                clr led6
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/12/2018 09:11:07 PAGE     7
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/12/2018 09:19:53 PAGE     7
 
-00A7 12006D          388                                lcall longdelay
+00A8 12006D          388                                lcall longdelay
 
-00AA C284            389                                clr led6
+00AB C296            389                                clr led5
 
-00AC 12006D          390                                lcall longdelay
+00AD 12006D          390                                lcall longdelay
 
-00AF C296            391                                clr led5
+00B0 C286            391                                clr led4
 
-00B1 12006D          392                                lcall longdelay
+00B2 12006D          392                                lcall longdelay
 
-00B4 C286            393                                clr led4
+00B5 C2A5            393                                clr led7
 
-00B6 12006D          394                                lcall longdelay
+00B7 12006D          394                                lcall longdelay
 
-00B9 C2A5            395                                clr led7
+00BA C287            395                                clr led8
 
-00BB 12006D          396                                lcall longdelay
+00BC 12006D          396                                lcall longdelay
 
-00BE C287            397                                clr led8
+00BF C2A6            397                                clr led9
 
-00C0 12006D          398                                lcall longdelay
+00C1 12006D          398                                lcall longdelay
 
-00C3 C2A6            399                                clr led9
+00C4 D2A6            399                                setb led9
 
-00C5 12006D          400                                lcall longdelay
+00C6 12006D          400                                lcall longdelay
 
-00C8 D2A6            401                                setb led9
+00C9 D287            401                                setb led8
 
-00CA 12006D          402                                lcall longdelay
+00CB 12006D          402                                lcall longdelay
 
-00CD D287            403                                setb led8
+00CE D2A5            403                                setb led7
 
-00CF 12006D          404                                lcall longdelay
+00D0 12006D          404                                lcall longdelay
 
-00D2 D2A5            405                                setb led7
+00D3 D286            405                                setb led4
 
-00D4 12006D          406                                lcall longdelay
+00D5 12006D          406                                lcall longdelay
 
-00D7 D286            407                                setb led4
+00D8 D296            407                                setb led5
 
-00D9 12006D          408                                lcall longdelay
+00DA 12006D          408                                lcall longdelay
 
-00DC D296            409                                setb led5
+00DD D284            409                                setb led6
 
-00DE 12006D          410                                lcall longdelay
+00DF 12006D          410                                lcall longdelay
 
-00E1 D284            411                                setb led6
+00E2 D2A7            411                                setb led3
 
-00E3 12006D          412                                lcall longdelay
+00E4 12006D          412                                lcall longdelay
 
-00E6 D2A7            413                                setb led3
+00E7 D285            413                                setb led2
 
-00E8 12006D          414                                lcall longdelay
+00E9 12006D          414                                lcall longdelay
 
-00EB D285            415                                setb led2
+00EC D2A4            415                                setb led1
 
-00ED 12006D          416                                lcall longdelay
+00EE 12006D          416                                lcall longdelay
 
-00F0 D2A4            417                                setb led1
+00F1 22              417                                ret
 
-00F2 12006D          418                                lcall longdelay
-
-00F5 22              419                                ret
-
-                     420     end
+                     418     end
 
                                      
 
                                      
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/12/2018 09:11:07 PAGE     8
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/12/2018 09:19:53 PAGE     8
 
 SYMBOL TABLE LISTING
 ------ ----- -------
@@ -877,7 +873,6 @@ AC . . . . . . . .  B ADDR   00D0H.6 A
 ACC. . . . . . . .  D ADDR   00E0H   A   
 ALARM. . . . . . .  C ADDR   007CH   A   
 ALARMLOOP. . . . .  C ADDR   007EH   A   
-ALARMLOOP2 . . . .  C ADDR   0080H   A   
 ALTAB. . . . . . .  B ADDR   00C8H.3 A   
 ALTCD. . . . . . .  B ADDR   00C8H.4 A   
 AUXR1. . . . . . .  D ADDR   00A2H   A   
@@ -893,7 +888,7 @@ CIN1A. . . . . . .  B ADDR   0080H.4 A
 CIN1B. . . . . . .  B ADDR   0080H.3 A   
 CIN2A. . . . . . .  B ADDR   0080H.2 A   
 CIN2B. . . . . . .  B ADDR   0080H.1 A   
-CLEAR. . . . . . .  C ADDR   0093H   A   
+CLEAR. . . . . . .  C ADDR   008FH   A   
 CMP1 . . . . . . .  D ADDR   00ACH   A   
 CMP1O. . . . . . .  B ADDR   0080H.6 A   
 CMP2 . . . . . . .  D ADDR   00ADH   A   
@@ -932,9 +927,9 @@ FE . . . . . . . .  B ADDR   0098H.7 A
 HERE . . . . . . .  C ADDR   0064H   A   
 HLTEN. . . . . . .  B ADDR   00C8H.5 A   
 HLTRN. . . . . . .  B ADDR   00C8H.6 A   
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/12/2018 09:11:07 PAGE     9
-
 I2ADR. . . . . . .  D ADDR   00DBH   A   
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/12/2018 09:19:53 PAGE     9
+
 I2CON. . . . . . .  D ADDR   00D8H   A   
 I2DAT. . . . . . .  D ADDR   00DAH   A   
 I2EN . . . . . . .  B ADDR   00D8H.6 A   
@@ -1000,9 +995,9 @@ OCRCL. . . . . . .  D ADDR   00FCH   A
 OCRDH. . . . . . .  D ADDR   00FFH   A   
 OCRDL. . . . . . .  D ADDR   00FEH   A   
 OFF. . . . . . . .  N NUMB   0001H   A   
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/12/2018 09:11:07 PAGE    10
-
 ON . . . . . . . .  N NUMB   0000H   A   
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/12/2018 09:19:53 PAGE    10
+
 OV . . . . . . . .  B ADDR   00D0H.2 A   
 P. . . . . . . . .  B ADDR   00D0H.0 A   
 P0 . . . . . . . .  D ADDR   0080H   A   
@@ -1068,12 +1063,12 @@ SPDAT. . . . . . .  D ADDR   00E3H   A
 SPICLK . . . . . .  B ADDR   00A0H.5 A   
 SPKR . . . . . . .  N NUMB   0097H   A   
 SPSTAT . . . . . .  D ADDR   00E1H   A   
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/12/2018 09:11:07 PAGE    11
-
 SS . . . . . . . .  B ADDR   00A0H.4 A   
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/12/2018 09:19:53 PAGE    11
+
 SSTAT. . . . . . .  D ADDR   00BAH   A   
 STA. . . . . . . .  B ADDR   00D8H.5 A   
-STARTUP. . . . . .  C ADDR   009BH   A   
+STARTUP. . . . . .  C ADDR   0097H   A   
 STO. . . . . . . .  B ADDR   00D8H.4 A   
 SW1. . . . . . . .  N NUMB   00A0H   A   
 SW2. . . . . . . .  N NUMB   0081H   A   
