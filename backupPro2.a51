@@ -105,8 +105,19 @@ here:          nop
 			   nop
 			   djnz R0, here
 			   ret
+LONGDELAY:	   mov R0, #255
+LONGTHERE:	   mov R1, #125
+LONGHERE:      nop
+               nop
+			   nop
+			   nop
+			   nop
+			   nop
+			   djnz R1, LONGHERE
+			   djnz R0, longthere
+			   ret
 
-ALARM:         mov R6, #2
+ALARM:         mov R6, #1
 ALARMLOOP:			   mov R7, #255
 ALARMLOOP2:    setb SPKR
 			   clr led3
@@ -119,35 +130,44 @@ ALARMLOOP2:    setb SPKR
 			   ret
 CLEAR:		   mov R5, #00
 			   lcall ALARM
-			   sjmp MAIN
+			   ljmp MAIN
 			   
-STARTUP:       setb led1        ;Turn each light on sequentially one at a time
-               lcall delay
-			   setb led2
-			   lcall delay
-			   setb led3
-			   lcall delay
-			   setb led6
-			   lcall delay
-			   setb led5
-			   lcall delay
-			   setb led4
-			   lcall delay
-			   setb led7
-			   lcall delay
-			   setb led8
-			   lcall delay
-			   setb led9
-			   lcall delay
-			   clr led9
-			   clr led8
-			   clr led7
-			   clr led4
-			   clr led5
-			   clr led6
-			   clr led3
+STARTUP:       clr led1        ;Turn each light on sequentially one at a time
+               lcall longdelay
 			   clr led2
-			   clr led1
+			   lcall longdelay
+			   clr led3
+			   lcall longdelay
+			   clr led6
+			   lcall longdelay
+			   clr led5
+			   lcall longdelay
+			   clr led4
+			   lcall longdelay
+			   clr led7
+			   lcall longdelay
+			   clr led8
+			   lcall longdelay
+			   clr led9
+			   lcall longdelay
+			   setb led9
+			   lcall longdelay
+			   setb led8
+			   lcall longdelay
+			   setb led7
+			   lcall longdelay
+			   setb led4
+			   lcall longdelay
+			   setb led5
+			   lcall longdelay
+			   setb led6
+			   lcall longdelay
+			   setb led3
+			   lcall longdelay
+			   setb led2
+			   lcall longdelay
+			   setb led1
+			   lcall longdelay
 			   ret
 end
 	
