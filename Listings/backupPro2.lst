@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/13/2018 12:23:54 PAGE     1
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/13/2018 13:27:15 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.2.5.0
@@ -122,7 +122,7 @@ LOC  OBJ            LINE     SOURCE
 
   0084          +1    57     KB4         BIT     0x84
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/13/2018 12:23:54 PAGE     2
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/13/2018 13:27:15 PAGE     2
 
   0085          +1    58     KB5         BIT     0x85
 
@@ -256,7 +256,7 @@ LOC  OBJ            LINE     SOURCE
 
   008A          +1   123     TL0         DATA        0x8A
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/13/2018 12:23:54 PAGE     3
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/13/2018 13:27:15 PAGE     3
 
   008C          +1   124     TH0         DATA        0x8C
 
@@ -390,7 +390,7 @@ LOC  OBJ            LINE     SOURCE
 
   00D3          +1   189     RTCL    DATA    0xD3
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/13/2018 12:23:54 PAGE     4
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/13/2018 13:27:15 PAGE     4
 
   00D2          +1   190     RTCH    DATA    0xD2
 
@@ -524,7 +524,7 @@ LOC  OBJ            LINE     SOURCE
 
   00A7               255             led3    equ 0a7h
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/13/2018 12:23:54 PAGE     5
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/13/2018 13:27:15 PAGE     5
 
   0086               256             led4    equ 86h
 
@@ -548,395 +548,409 @@ LOC  OBJ            LINE     SOURCE
 
   0094               266             sw5             equ 94h
 
-  0080               267             sw6             equ     80h
+                     267             
 
-  00A1               268             sw7             equ     0a1h
+  0097               268             SPKR    equ 97h
 
-  0083               269             sw8             equ     83h
+  0000               269             on              equ 0
 
-  00A2               270             sw9             equ     0a2h
+  0001               270             off             equ 1
 
                      271             
 
-  0097               272             SPKR    equ 97h
+0000 7D00            272             mov r5, #00
 
-  0000               273             on              equ 0
+0002 75A400          273             mov p2m1, #00           ; set Port 2 to bi-directional
 
-  0001               274             off             equ 1
+0005 759100          274             mov p1m1, #00           ; set Port 1 to bi-directional
 
-                     275             
+0008 758400          275             mov P0m1, #00           ; set Port 0 to bi-directional
 
-0000 7D00            276             mov R5, #00
+000B 75D000          276             mov psw, #00
 
-0002 75A400          277             mov P2M1, #00           ; set Port 2 to bi-directional
+000E E4              277             clr a
 
-0005 759100          278             mov P1M1, #00           ; set Port 1 to bi-directional
+000F C3              278             clr c
 
-0008 758400          279             mov P0M1, #00           ; set Port 0 to bi-directional
+                     279     
 
-000B 75D000          280             mov PSW, #00
+                     280     
 
-000E E4              281             CLR A
+0010 1200BA          281             lcall STARTUP           
 
-000F C3              282             CLR C
+                     282     
 
                      283     
 
-                     284     
+0013                 284     MAIN:
 
-0010 1200BC          285             lcall STARTUP           ; Evan's Code
+0013 12004F          285             lcall RESET                     ; Check if the counter needs to be reset
 
-                     286     
+0016 ED              286             mov a, r5                       ; Complement the counter bits and send to the LEDs 
+                                  
 
-                     287     
+0017 F4              287         CPL a                       
 
-0013                 288     MAIN:
+0018 A2E0            288             mov c, 0E0h             ; A.0
 
-                     289     
+001A 92A6            289             mov led9, c             ; A.0
 
-                     290             ;CPL A
+001C A2E1            290             mov c, 0E1h             ; A.1
 
-                     291             
+001E 9287            291             mov led8, c             ; A.1
 
-                     292             ;mov a, sw2             
+0020 A2E2            292             mov c, 0E2h             ; A.2
 
-0013 12004F          293             lcall RESET
+0022 92A5            293             mov led7, c             ; A.2
 
-0016 ED              294             mov A, R5
+0024 A2E3            294             mov c, 0E3h             ; A.3
 
-0017 F4              295         CPL A                       ; Complement the bits and send to the LEDs      
+0026 9286            295             mov led4, c             ; A.3
 
-0018 A2E0            296             mov c, 0E0h             ; A.0
+0028 C3              296             clr c
 
-001A 92A6            297             mov led9, c             ; A.0
+0029 30823C          297             jnb sw4, AUTOINC        ; Auto-increment the counter if switch 4 is pressed        
+                                                                  
 
-001C A2E1            298             mov c, 0E1h             ; A.1
+002C 30A014          298             jnb sw1, DECREMENT      ; Manually decrement the counter if switch 1 is pressed
 
-001E 9287            299             mov led8, c             ; A.1
+                     299                                                     ; Waits until the button is released to ret
+                             urn
 
-0020 A2E2            300             mov c, 0E2h             ; A.2
+                     300                                                     
 
-0022 92A5            301             mov led7, c             ; A.2
+002F 308108          301             jnb sw2, INCREMENT      ; Manually increment the counter if switch 2 is pressed
 
-0024 A2E3            302             mov c, 0E3h             ; A.3
+                     302                                                     ; Waits until the switch is released to ret
+                             urn
 
-0026 9286            303             mov led4, c             ; A.3
+                     303                                                     
 
-0028 C3              304             clr c
+0032 30A37D          304             jnb sw3, CLEAR          ; Clear the counter if switch 3 is pressed
 
-0029 30823C          305             jnb sw4, AUTOINC
+0035 30943F          305             jnb sw5, BEEPCNT        ; Beep the current count if switch 5 is pressed 
 
-002C 30A014          306             jnb sw1, DECREMENT
+                     306     
 
-002F 308108          307             jnb sw2, INCREMENT
+0038 80D9            307             sjmp MAIN                       ; Keeps the program running
 
-0032 30A37F          308             jnb sw3, CLEAR
+                     308             
 
-0035 30943F          309             jnb sw5, BEEPCNT
+003A                 309     INCREMENT:                              ; Increments the counter
 
-                     310     
+003A ED              310             mov a, r5               
 
-0038 80D9            311             sjmp MAIN
+003B 2401            311             add a, #01h             ; Increment with flags
 
-                     312             
+003D FD              312             mov r5, a
 
-003A                 313     INCREMENT:         
+                     313                                
 
-003A ED              314             mov A, R5               
+                     314                       
 
-003B 2401            315             add A, #01h             ; Increment with flags
+                     315                                
 
-003D FD              316             mov R5, A
+                     316                                
 
-                     317                                
+003E                 317     INCHOLD:           
 
-                     318                       
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/13/2018 13:27:15 PAGE     6
 
-                     319                                
+003E 3081FD          318             jnb sw2, INCHOLD        ; Keep looping this if the button is held
 
-                     320                                
+0041 80D0            319             sjmp MAIN
 
-003E                 321     INCHOLD:           
+                     320             
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/13/2018 12:23:54 PAGE     6
+0043                 321     DECREMENT:                      ; Decrements the counter
 
-003E 3081FD          322             jnb sw2, INCHOLD        ; Keep looping this if the button is held
+0043 C3              322             clr c
 
-0041 80D0            323             sjmp MAIN
+0044 ED              323         mov a, r5           
 
-                     324             
+0045 9401            324             subb a, #01h            ; Subtract 01h to the current value
 
-0043                 325     DECREMENT:     
+0047 FD              325             mov r5, a          
 
-0043 C3              326             clr c
+                     326                                
 
-0044 ED              327         mov A, R5           
+                     327     
 
-0045 9401            328             subb A, #01h            ; Add 10h to the current value
+0048                 328     DECHOLD:                                   
 
-0047 FD              329             mov R5, A          
+0048 30A0FD          329             jnb sw1, DECHOLD;       ; Keep looping this if the button is held
 
-                     330                                
+004B C2D6            330             clr psw.6
 
-                     331     
+004D 80C4            331             sjmp MAIN
 
-0048                 332     DECHOLD:           
+                     332                                
 
-0048 30A0FD          333             jnb sw1, DECHOLD;       ; Keep looping this if the button is held
+004F                 333     RESET:                                  ; Resets the counter if it equals 0Fh
 
-004B C2D6            334             clr psw.6
+004F 20D604          334             jb psw.6, RESETINC
 
-004D 80C4            335             sjmp MAIN
+0052 20D70A          335             jb psw.7, RESETDEC
 
-                     336                                
+0055                 336     RESETRET:          
 
-004F                 337     RESET:             
+0055 22              337             ret
 
-004F 20D604          338             jb psw.6, RESETINC
+                     338                                
 
-0052 20D70A          339             jb psw.7, RESETDEC
+0056                 339     RESETINC:                               ; Resets the counter to 0 if 0Fh is being approache
+                             d 
 
-0055                 340     RESETRET:          
+                     340                                                     ; from the positive direction
 
-0055 22              341             ret
+0056 C2D6            341             clr psw.6
 
-                     342                                
+0058 7D00            342             mov r5, #00
 
-0056                 343     RESETINC:          
+005A 12009F          343         lcall ALARM
 
-0056 C2D6            344             clr psw.6
+005D 80F6            344             SJMP RESETRET
 
-0058 7D00            345             mov R5, #00
+                     345     
 
-005A 1200A1          346         lcall ALARM
+005F                 346     RESETDEC:
 
-005D 80F6            347             SJMP RESETRET
+                     347                                                     ; Resets the counter to 0Fh if 0FF is being
+                              approached
 
-                     348     
+                     348                                                     ; from the negative direction
 
-005F                 349     RESETDEC:          
+005F C2D7            349             clr psw.7
 
-005F C2D7            350             clr psw.7
+0061 7D0F            350             mov r5, #0Fh
 
-0061 7D0F            351             mov R5, #0fh
+0063 12009F          351             lcall ALARM
 
-0063 1200A1          352             lcall ALARM
+0066 80ED            352             SJMP RESETRET
 
-0066 80ED            353             SJMP RESETRET
+                     353                                
 
-                     354                                
+0068                 354     AUTOINC:                                ; Automatically increment the counter after a delay
+                              to
 
-0068                 355     AUTOINC:
+                     355                                                     ; allow the user to read the LED display be
+                             tween 
 
-0068 ED              356             mov A, R5               
+                     356                                                     ; increment operations
 
-0069 2401            357             add A, #01h             ; Increment with flags
+0068 ED              357             mov a, r5               
 
-006B FD              358             mov R5, A
+0069 2401            358             add a, #01h             ; Increment with flags
 
-006C 120092          359             lcall LONGDELAY
+006B FD              359             mov r5, a
 
-006F 120092          360             lcall LONGDELAY
+006C 120090          360             lcall LONGDELAY
 
-0072 120092          361             lcall LONGDELAY
+006F 120090          361             lcall LONGDELAY
 
-0075 809C            362             sjmp MAIN
+0072 120090          362             lcall LONGDELAY
 
-                     363             
+0075 809C            363             sjmp MAIN
 
                      364             
 
-0077                 365     BEEPCNT:
+                     365             
 
-0077 8D04            366             mov 04h, R5
+0077                 366     BEEPCNT:                                ; Use the speaker to beep the number of times 
 
-0079 E504            367             mov A, 04h
+                     367                                                     ; based on the value allocated to the count
+                             er
 
-007B 6096            368             jz MAIN
+0077 ED              368             mov a, r5
 
-007D                 369     BEEPLOOP:
+0078 FC              369             mov r4, a
 
-007D 1200A1          370             lcall ALARM
+0079 6098            370             jz MAIN
 
-0080 120092          371             lcall LONGDELAY
+007B                 371     BEEPLOOP:
 
-0083 DCF8            372             DJNZ R4, BEEPLOOP
+007B 12009F          372             lcall ALARM
 
-0085 808C            373             sjmp MAIN
+007E 120090          373             lcall LONGDELAY
 
-                     374     
+0081 DCF8            374             DJNZ r4, BEEPLOOP
 
-0087                 375     DELAY:         
+0083 808E            375             sjmp MAIN
 
-0087 78E6            376             mov R0, #230
+                     376     
 
-0089                 377     here:          
+0085                 377     DELAY:                                  ; Creates a short delay       
 
-0089 00              378             nop
+0085 78E6            378             mov r0, #230
 
-008A 00              379         nop
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/13/2018 13:27:15 PAGE     7
 
-008B 00              380             nop
+0087                 379     HERE:
 
-008C 00              381             nop
+0087 00              380             nop
 
-008D 00              382             nop
+0088 00              381         nop
 
-008E 00              383             nop
+0089 00              382             nop
 
-008F D8F8            384             djnz R0, here
+008A 00              383             nop
 
-0091 22              385             ret
+008B 00              384             nop
 
-0092                 386     LONGDELAY:         
+008C 00              385             nop
 
-0092 78FF            387             mov R0, #255
+008D D8F8            386             djnz r0, here
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/13/2018 12:23:54 PAGE     7
+008F 22              387             ret
 
-0094                 388     LONGTHERE:         
+0090                 388     LONGDELAY:                              ; Creates a longer delay using nested loops  
 
-0094 797D            389             mov R1, #125
+0090 78FF            389             mov r0, #255
 
-0096                 390     LONGHERE:      
+0092                 390     LONGTHERE:         
 
-0096 00              391             nop
+0092 797D            391             mov r1, #125
 
-0097 00              392         nop
+0094                 392     LONGHERE:      
 
-0098 00              393             nop
+0094 00              393             nop
 
-0099 00              394             nop
+0095 00              394         nop
 
-009A 00              395             nop
+0096 00              395             nop
 
-009B 00              396             nop
+0097 00              396             nop
 
-009C D9F8            397             djnz R1, LONGHERE
+0098 00              397             nop
 
-009E D8F4            398             djnz R0, longthere
+0099 00              398             nop
 
-00A0 22              399             ret
+009A D9F8            399             djnz r1, LONGHERE
 
-                     400     
+009C D8F4            400             djnz r0, LONGTHERE
 
-00A1                 401     ALARM:         
+009E 22              401             ret
 
-00A1 7FFF            402             mov R7, #255
+                     402     
 
-00A3                 403     ALARMLOOP:    
+009F                 403     ALARM:                                  ; Send a 1 KHz square way to the speaker      
 
-00A3 D297            404             setb SPKR
+009F 7FFF            404             mov r7, #255
 
-00A5 C2A7            405             clr led3
+00A1                 405     ALARMLOOP:    
 
-00A7 120087          406             lcall DELAY
+00A1 D297            406             setb SPKR
 
-00AA D2A7            407             setb led3
+00A3 C2A7            407             clr led3
 
-00AC C297            408             clr SPKR
+00A5 120085          408             lcall DELAY
 
-00AE 120087          409             lcall delay
+00A8 D2A7            409             setb led3
 
-00B1 DFF0            410             djnz R7, ALARMLOOP
+00AA C297            410             clr SPKR
 
-00B3 22              411             ret
+00AC 120085          411             lcall delay
 
-00B4                 412     CLEAR:             
+00AF DFF0            412             djnz r7, ALARMLOOP
 
-00B4 7D00            413             mov R5, #00
+00B1 22              413             ret
 
-00B6 1200A1          414             lcall ALARM
+00B2                 414     CLEAR:                                  ; Clear the counter and make the speaker beep      
+                                     
 
-00B9 020013          415             ljmp MAIN
+00B2 7D00            415             mov r5, #00
 
-                     416                                
+00B4 12009F          416             lcall ALARM
 
-00BC                 417     STARTUP:       
+00B7 020013          417             ljmp MAIN
 
-00BC C2A4            418             clr led1                ; Turn each light on sequentially one at a time
+                     418                                
 
-00BE 120092          419         lcall longdelay
+00BA                 419     STARTUP:       
 
-00C1 C285            420             clr led2
+00BA C2A4            420             clr led1                ; Turn each light on in spiral pattern
 
-00C3 120092          421             lcall longdelay
+00BC 120090          421         lcall longdelay
 
-00C6 C2A7            422             clr led3
+00BF C285            422             clr led2
 
-00C8 120092          423             lcall longdelay
+00C1 120090          423             lcall longdelay
 
-00CB C284            424             clr led6
+00C4 C2A7            424             clr led3
 
-00CD 120092          425             lcall longdelay
+00C6 120090          425             lcall longdelay
 
-00D0 C2A6            426             clr led9
+00C9 C284            426             clr led6
 
-00D2 120092          427             lcall longdelay
+00CB 120090          427             lcall longdelay
 
-00D5 C287            428             clr led8
+00CE C2A6            428             clr led9
 
-00D7 120092          429             lcall longdelay
+00D0 120090          429             lcall longdelay
 
-00DA C2A5            430             clr led7
+00D3 C287            430             clr led8
 
-00DC 120092          431             lcall longdelay
+00D5 120090          431             lcall longdelay
 
-00DF C296            432             clr led5
+00D8 C2A5            432             clr led7
 
-00E1 120092          433             lcall longdelay
+00DA 120090          433             lcall longdelay
 
-00E4 C286            434             clr led4
+00DD C296            434             clr led5
 
-00E6 120092          435             lcall longdelay
+00DF 120090          435             lcall longdelay
 
-00E9 D296            436             setb led5
+00E2 C286            436             clr led4
 
-00EB 120092          437             lcall longdelay
+00E4 120090          437             lcall longdelay
 
-00EE D284            438             setb led6
+00E7 D296            438             setb led5
 
-00F0 120092          439             lcall longdelay
+00E9 120090          439             lcall longdelay
 
-00F3 D2A6            440             setb led9
+00EC D284            440             setb led6
 
-00F5 120092          441             lcall longdelay
+00EE 120090          441             lcall longdelay
 
-00F8 D287            442             setb led8
+00F1 D2A6            442             setb led9
 
-00FA 120092          443             lcall longdelay
+00F3 120090          443             lcall longdelay
 
-00FD D2A5            444             setb led7
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/13/2018 13:27:15 PAGE     8
 
-00FF 120092          445             lcall longdelay
+00F6 D287            444             setb led8
 
-0102 D286            446             setb led4
+00F8 120090          445             lcall longdelay
 
-0104 120092          447             lcall longdelay
+00FB D2A5            446             setb led7
 
-0107 D2A4            448             setb led1
+00FD 120090          447             lcall longdelay
 
-0109 120092          449             lcall longdelay
+0100 D286            448             setb led4
 
-010C D285            450             setb led2
+0102 120090          449             lcall longdelay
 
-010E 120092          451             lcall longdelay
+0105 D2A4            450             setb led1
 
-0111 D2A7            452             setb led3
+0107 120090          451             lcall longdelay
 
-0113 120092          453             lcall longdelay
+010A D285            452             setb led2
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/13/2018 12:23:54 PAGE     8
+010C 120090          453             lcall longdelay
 
-0116 22              454             ret
+010F D2A7            454             setb led3
 
-                     455     end
+0111 120090          455             lcall longdelay
+
+0114 22              456             ret
+
+                     457     end
 
                                      
 
                                      
 
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/13/2018 12:23:54 PAGE     9
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/13/2018 13:27:15 PAGE     9
 
 SYMBOL TABLE LISTING
 ------ ----- -------
@@ -947,15 +961,15 @@ N A M E             T Y P E  V A L U E   ATTRIBUTES
 AA . . . . . . . .  B ADDR   00D8H.2 A   
 AC . . . . . . . .  B ADDR   00D0H.6 A   
 ACC. . . . . . . .  D ADDR   00E0H   A   
-ALARM. . . . . . .  C ADDR   00A1H   A   
-ALARMLOOP. . . . .  C ADDR   00A3H   A   
+ALARM. . . . . . .  C ADDR   009FH   A   
+ALARMLOOP. . . . .  C ADDR   00A1H   A   
 ALTAB. . . . . . .  B ADDR   00C8H.3 A   
 ALTCD. . . . . . .  B ADDR   00C8H.4 A   
 AUTOINC. . . . . .  C ADDR   0068H   A   
 AUXR1. . . . . . .  D ADDR   00A2H   A   
 B. . . . . . . . .  D ADDR   00F0H   A   
 BEEPCNT. . . . . .  C ADDR   0077H   A   
-BEEPLOOP . . . . .  C ADDR   007DH   A   
+BEEPLOOP . . . . .  C ADDR   007BH   A   
 BRGCON . . . . . .  D ADDR   00BDH   A   
 BRGR0. . . . . . .  D ADDR   00BEH   A   
 BRGR1. . . . . . .  D ADDR   00BFH   A   
@@ -967,7 +981,7 @@ CIN1A. . . . . . .  B ADDR   0080H.4 A
 CIN1B. . . . . . .  B ADDR   0080H.3 A   
 CIN2A. . . . . . .  B ADDR   0080H.2 A   
 CIN2B. . . . . . .  B ADDR   0080H.1 A   
-CLEAR. . . . . . .  C ADDR   00B4H   A   
+CLEAR. . . . . . .  C ADDR   00B2H   A   
 CMP1 . . . . . . .  D ADDR   00ACH   A   
 CMP1O. . . . . . .  B ADDR   0080H.6 A   
 CMP2 . . . . . . .  D ADDR   00ADH   A   
@@ -980,7 +994,7 @@ DECREMENT. . . . .  C ADDR   0043H   A
 DEEADR . . . . . .  D ADDR   00F3H   A   
 DEECON . . . . . .  D ADDR   00F1H   A   
 DEEDAT . . . . . .  D ADDR   00F2H   A   
-DELAY. . . . . . .  C ADDR   0087H   A   
+DELAY. . . . . . .  C ADDR   0085H   A   
 DIVM . . . . . . .  D ADDR   0095H   A   
 DPH. . . . . . . .  D ADDR   0083H   A   
 DPL. . . . . . . .  D ADDR   0082H   A   
@@ -1003,8 +1017,8 @@ EX1. . . . . . . .  B ADDR   00A8H.2 A
 F0 . . . . . . . .  B ADDR   00D0H.5 A   
 F1 . . . . . . . .  B ADDR   00D0H.1 A   
 FE . . . . . . . .  B ADDR   0098H.7 A   
-HERE . . . . . . .  C ADDR   0089H   A   
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/13/2018 12:23:54 PAGE    10
+HERE . . . . . . .  C ADDR   0087H   A   
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/13/2018 13:27:15 PAGE    10
 
 HLTEN. . . . . . .  B ADDR   00C8H.5 A   
 HLTRN. . . . . . .  B ADDR   00C8H.6 A   
@@ -1055,9 +1069,9 @@ LED6 . . . . . . .  N NUMB   0084H   A
 LED7 . . . . . . .  N NUMB   00A5H   A   
 LED8 . . . . . . .  N NUMB   0087H   A   
 LED9 . . . . . . .  N NUMB   00A6H   A   
-LONGDELAY. . . . .  C ADDR   0092H   A   
-LONGHERE . . . . .  C ADDR   0096H   A   
-LONGTHERE. . . . .  C ADDR   0094H   A   
+LONGDELAY. . . . .  C ADDR   0090H   A   
+LONGHERE . . . . .  C ADDR   0094H   A   
+LONGTHERE. . . . .  C ADDR   0092H   A   
 MAIN . . . . . . .  C ADDR   0013H   A   
 MISO . . . . . . .  B ADDR   00A0H.3 A   
 MOSI . . . . . . .  B ADDR   00A0H.2 A   
@@ -1072,7 +1086,7 @@ OCRBL. . . . . . .  D ADDR   00FAH   A
 OCRCH. . . . . . .  D ADDR   00FDH   A   
 OCRCL. . . . . . .  D ADDR   00FCH   A   
 OCRDH. . . . . . .  D ADDR   00FFH   A   
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/13/2018 12:23:54 PAGE    11
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/13/2018 13:27:15 PAGE    11
 
 OCRDL. . . . . . .  D ADDR   00FEH   A   
 OFF. . . . . . . .  N NUMB   0001H   A   
@@ -1140,24 +1154,20 @@ SP . . . . . . . .  D ADDR   0081H   A
 SPCTL. . . . . . .  D ADDR   00E2H   A   
 SPDAT. . . . . . .  D ADDR   00E3H   A   
 SPICLK . . . . . .  B ADDR   00A0H.5 A   
-A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/13/2018 12:23:54 PAGE    12
+A51 MACRO ASSEMBLER  BACKUPPRO2                                                           04/13/2018 13:27:15 PAGE    12
 
 SPKR . . . . . . .  N NUMB   0097H   A   
 SPSTAT . . . . . .  D ADDR   00E1H   A   
 SS . . . . . . . .  B ADDR   00A0H.4 A   
 SSTAT. . . . . . .  D ADDR   00BAH   A   
 STA. . . . . . . .  B ADDR   00D8H.5 A   
-STARTUP. . . . . .  C ADDR   00BCH   A   
+STARTUP. . . . . .  C ADDR   00BAH   A   
 STO. . . . . . . .  B ADDR   00D8H.4 A   
 SW1. . . . . . . .  N NUMB   00A0H   A   
 SW2. . . . . . . .  N NUMB   0081H   A   
 SW3. . . . . . . .  N NUMB   00A3H   A   
 SW4. . . . . . . .  N NUMB   0082H   A   
 SW5. . . . . . . .  N NUMB   0094H   A   
-SW6. . . . . . . .  N NUMB   0080H   A   
-SW7. . . . . . . .  N NUMB   00A1H   A   
-SW8. . . . . . . .  N NUMB   0083H   A   
-SW9. . . . . . . .  N NUMB   00A2H   A   
 T0 . . . . . . . .  B ADDR   0090H.2 A   
 T1 . . . . . . . .  B ADDR   0080H.7 A   
 TAMOD. . . . . . .  D ADDR   008FH   A   
