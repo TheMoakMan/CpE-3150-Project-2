@@ -58,6 +58,7 @@ MAIN:
 	jnb sw1, DECREMENT
 	jnb sw2, INCREMENT
 	jnb sw3, CLEAR
+	jnb sw5, BEEPCNT
 
 	sjmp MAIN
 	
@@ -110,10 +111,17 @@ AUTOINC:
 	lcall LONGDELAY
 	lcall LONGDELAY
 	lcall LONGDELAY
+	sjmp MAIN
+	
+	
+BEEPCNT:
+	mov 04h, R5
+	mov A, 04h
+	jz MAIN
+BEEPLOOP:
+	lcall ALARM
 	lcall LONGDELAY
-	lcall LONGDELAY
-	lcall LONGDELAY
-	lcall LONGDELAY
+	DJNZ R4, BEEPLOOP
 	sjmp MAIN
 
 DELAY:         
@@ -167,15 +175,19 @@ STARTUP:
 	lcall longdelay
 	clr led6
 	lcall longdelay
+	clr led9
+	lcall longdelay
+	clr led8
+	lcall longdelay
+	clr led7
+	lcall longdelay
 	clr led5
 	lcall longdelay
 	clr led4
 	lcall longdelay
-	clr led7
+	setb led5
 	lcall longdelay
-	clr led8
-	lcall longdelay
-	clr led9
+	setb led6
 	lcall longdelay
 	setb led9
 	lcall longdelay
@@ -185,15 +197,11 @@ STARTUP:
 	lcall longdelay
 	setb led4
 	lcall longdelay
-	setb led5
-	lcall longdelay
-	setb led6
-	lcall longdelay
-	setb led3
+	setb led1
 	lcall longdelay
 	setb led2
 	lcall longdelay
-	setb led1
+	setb led3
 	lcall longdelay
 	ret
 end
