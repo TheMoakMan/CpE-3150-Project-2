@@ -54,6 +54,7 @@ MAIN:
 	mov c, 0E3h   		; A.3
 	mov led4, c   		; A.3
 	clr c
+	jnb sw4, AUTOINC
 	jnb sw1, DECREMENT
 	jnb sw2, INCREMENT
 	jnb sw3, CLEAR
@@ -102,7 +103,19 @@ RESETDEC:
 	lcall ALARM
 	SJMP RESETRET
 			   
-			   
+AUTOINC:
+	mov A, R5        	
+	add A, #01h      	; Increment with flags
+	mov R5, A
+	lcall LONGDELAY
+	lcall LONGDELAY
+	lcall LONGDELAY
+	lcall LONGDELAY
+	lcall LONGDELAY
+	lcall LONGDELAY
+	lcall LONGDELAY
+	sjmp MAIN
+
 DELAY:         
 	mov R0, #230
 here:          
