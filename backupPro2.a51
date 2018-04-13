@@ -137,6 +137,8 @@ HERE:
 	nop
 	djnz r0, here
 	ret
+
+
 LONGDELAY:	 			; Creates a longer delay using nested loops  
 	mov r0, #255
 LONGTHERE:	   
@@ -152,7 +154,7 @@ LONGHERE:
 	djnz r0, LONGTHERE
 	ret
 
-ALARM:   				; Send a 1 KHz square way to the speaker      
+ALARM:   				; Send a 1 KHz square wave to the speaker      
 	mov r7, #255
 ALARMLOOP:    
 	setb SPKR
